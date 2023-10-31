@@ -33,9 +33,33 @@ else
     echo "[Command Failed]"
 fi
 
+echo "$ git fetch -a"
+git fetch -a
+
+echo "$ git checkout $developmentBranch"
+# `> /dev/null` redirects stdout to /dev/null: silencing this command's output.
+git checkout $developmentBranch > /dev/null 2>&1
+
+echo "$ git pull"
+# `> /dev/null` redirects stdout to /dev/null: silencing this command's output.
+git pull > /dev/null
+
+echo "... Validating that the target command: $brokenCommand is broken. ..."
+echo "$ $brokenCommand"
+# `> /dev/null 2>&1` redirects stdout and stderr to /dev/null, silencing this command's output and errors.
+$brokenCommand > /dev/null 2>&1
+
+if [ $? -eq 0 ]; then
+    echo "[Command Executed Successfully]"
+    echo "\n\nYour broken command does not appear to be broken."
+    exit 2
+else
+    echo "[Command Failed, as expected.]"
+fi
+
+echo "... TBC ..."
+
 echo "__ Fin. __"
-
-
 
 
 # Just ignore the notes below...
