@@ -1,0 +1,7 @@
+{
+  "name": "when-broke",
+  "version": "1.0.0",
+  "description": "A debugging to for rapidly parsing git history to discover when a package command broke.",
+  "main": "index.js",
+  "license": "MIT"
+}
