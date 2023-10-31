@@ -18,13 +18,12 @@ developmentBranch="main"
 brokenCommand="yarn gql:compile"
 lastWorkingCommit="cbfe239d"
 
-
 echo "... Going to target directory: $projectDir ..."
 cd $projectDir
-echo "... Current pwd: $(pwd)"
+echo "... Current pwd: $(pwd)."
 
 echo "... Validating that current directory is a git project..."
-echo "$ git status ..."
+echo "$ git status"
 git status
 
 if [ $? -eq 0 ]; then
@@ -36,17 +35,25 @@ fi
 echo "$ git fetch -a"
 git fetch -a
 
-echo "$ git checkout $developmentBranch"
+initialBranch=$(git branch --show-current)
+echo "... Current branch: $initialBranch."
+
+echo "... stashing any work-in-progress changes ..."
+echo "$ git stash -u"
 # `> /dev/null` redirects stdout to /dev/null: silencing this command's output.
+git stash -u > /dev/null
+
+echo "$ git checkout $developmentBranch"
+# silence command stdout
 git checkout $developmentBranch > /dev/null 2>&1
 
 echo "$ git pull"
-# `> /dev/null` redirects stdout to /dev/null: silencing this command's output.
+# silence command stdout
 git pull > /dev/null
 
 echo "... Validating that the target command: $brokenCommand is broken. ..."
 echo "$ $brokenCommand"
-# `> /dev/null 2>&1` redirects stdout and stderr to /dev/null, silencing this command's output and errors.
+# silence command stdout AND stderr
 $brokenCommand > /dev/null 2>&1
 
 if [ $? -eq 0 ]; then
@@ -57,7 +64,45 @@ else
     echo "[Command Failed, as expected.]"
 fi
 
+
+echo "... Checking out latest known working commit: $lastWorkingCommit ..."
+echo "$ git checkout $lastWorkingCommit"
+# silence command stdout AND stderr
+git checkout $lastWorkingCommit > /dev/null 2>&1
+
+if [ $? -ne 0 ]; then
+    echo "[Failed to check out 'lastWorkingCommit'.]"
+    exit 2
+fi
+
+echo "... Validating that the target command: $brokenCommand is broken ..."
+echo "$ $brokenCommand"
+# silence command stdout AND stderr
+$brokenCommand > /dev/null 2>&1
+
+if [ $? -eq 0 ]; then
+    echo "[Command Executed Successfully]"
+else
+    echo "[Command Failed]"
+    echo "\n\nYour \"lastWorkingCommit\" does not appear to have a valid working state."
+    exit 2
+fi
+
+
 echo "... TBC ..."
+
+echo "... Cleaning up ..."
+echo "$ git reset HEAD --hard"
+git reset HEAD --hard
+
+echo $initialBranch
+if [ $initialBranch != "" ]; then
+    echo "$ git checkout $initialBranch"
+    git checkout $initialBranch > /dev/null
+else
+    echo "$ git checkout $developmentBranch"
+    git checkout $developmentBranch > /dev/null
+fi
 
 echo "__ Fin. __"
 
