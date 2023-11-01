@@ -11,11 +11,11 @@ echo "$arr"
 found=false
 i=0
 workingArr=("${arr[@]}")  
-numItems=${#workingArr[@]}
 printf '%s\n' "${workingArr[@]}"
 
 while [[ $found == false && i -lt 10 ]]; do
     # bash uses floor rounding natively
+    numItems=${#workingArr[@]}
     midItemIndex=$(( $numItems / 2 ))
     midItem=${workingArr[$midItemIndex]}
 
@@ -25,20 +25,15 @@ while [[ $found == false && i -lt 10 ]]; do
     if [ $matches == true ]; then
         echo "[matches] Go further forward."
         # Re-assing working array to be 'mid' => [-1]
-        # workingArr=${workingArr[@]:$midItemIndex:${#workingArr[*]}}
-        # C=("${A[@]:1}")       # slice to the end of the array
-        workingArr=${workingArr[@]:$midItemIndex}
+        workingArr=("${workingArr[@]:$midItemIndex}")
         echo "New Working Array based on midItemIndex: $midItemIndex, num items: ${#workingArr[*]}"
         printf '%s\n' "${workingArr[@]}"
     else
         echo "[Not matches] Go further back."
         # Re-assign working array to be 0 => 'mid'
-        # newArr=(${workingArr[@]:0:$midItemIndex})
-        newArr=${workingArr[@]::$midItemIndex}
+        workingArr=("${workingArr[@]::$midItemIndex}")
         echo "New Working Array based on midItemIndex: $midItemIndex, num items: ${#workingArr[*]}"
-        printf '%s\n' "${arr[@]}"
-        # echo "$newArr"
-        workingArr=$newArr
+        printf '%s\n' "${workingArr[@]}"
     fi
 
     i=$(( i + 1 ))
