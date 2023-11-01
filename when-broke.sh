@@ -127,7 +127,8 @@ workingArr=($commits)
 # while [[ $found == false && i -lt $numCommits ]]; do
 while [[ $found == false && i -lt 10 ]]; do
     # bash uses floor rounding natively
-    midItemIndex=$(( $numCommits / 2 ))
+    numItems=${#workingArr[@]}
+    midItemIndex=$(( $numItems / 2 ))
     midItem=${workingArr[$midItemIndex]}
 
     echo $'\n'"[$i]; workingArrCount: ${#workingArr[*]}; midIndex: $midItemIndex; commit: $midItem"
@@ -140,17 +141,13 @@ while [[ $found == false && i -lt 10 ]]; do
     if [ $isFunctioning == true ]; then
         echo "[Working] Go further forward."
         # Re-assing working array to be 'mid' => [-1]
-        # workingArr=${workingArr[@]:$midItemIndex:${#workingArr[*]}}
-        workingArr=${workingArr[@]:$midItemIndex}
+        workingArr=("${workingArr[@]:$midItemIndex}")
         echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex"
     else
         echo "[Broken] Go further back."
         # Re-assign working array to be 0 => 'mid'
-        # newArr=(${workingArr[@]:0:$midItemIndex})
-        newArr=(${workingArr[@]::$midItemIndex})
+        workingArr=("${workingArr[@]::$midItemIndex}")
         echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex"
-        # echo "$newArr"
-        workingArr=$newArr
     fi
 
     i=$(( i + 1 ))
