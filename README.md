@@ -3,6 +3,7 @@
 `when-broke` is a bash script which aides in finding the exact commit when a
 command broke within a git repository.
 In other words it tells you when a command broke.
+** In other words, it's `git bisect` (lol) **
 
 It is not polished or maintained.
 It just helped me find what I needed this one time.
