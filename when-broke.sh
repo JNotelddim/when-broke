@@ -20,10 +20,15 @@ lastWorkingCommit="cbfe239d"
 
 echo "... Going to target directory: $projectDir ..."
 cd $projectDir
-echo "... Current pwd: $(pwd)."
+if [ $? -ne 0 ]; then 
+    echo "Failed to navigate to the target directory."
+    exit 2
+else
+    echo "... Current pwd: $(pwd)."
+fi
 
 echo "... Validating that current directory is a git project..."
-echo "$ git status"
+echo $'\n$ git status'
 git status
 
 if [ $? -eq 0 ]; then
@@ -32,27 +37,27 @@ else
     echo "[Command Failed]"
 fi
 
-echo "$ git fetch -a"
+echo $'\n$ git fetch -a'
 git fetch -a
 
 initialBranch=$(git branch --show-current)
 echo "... Current branch: $initialBranch."
 
 echo "... stashing any work-in-progress changes ..."
-echo "$ git stash -u"
+echo $'\n$ git stash -u'
 # `> /dev/null` redirects stdout to /dev/null: silencing this command's output.
 git stash -u > /dev/null
 
-echo "$ git checkout $developmentBranch"
+echo $'\n$ git checkout '"$developmentBranch"
 # silence command stdout
 git checkout $developmentBranch > /dev/null 2>&1
 
-echo "$ git pull"
+echo $'\n$ git pull'
 # silence command stdout
 git pull > /dev/null
 
 echo "... Validating that the target command: $brokenCommand is broken. ..."
-echo "$ $brokenCommand"
+echo $'\n$'"$brokenCommand"
 # silence command stdout AND stderr
 $brokenCommand > /dev/null 2>&1
 
@@ -66,7 +71,7 @@ fi
 
 
 echo "... Checking out latest known working commit: $lastWorkingCommit ..."
-echo "$ git checkout $lastWorkingCommit"
+echo $'\n$ git checkout '"$lastWorkingCommit"
 # silence command stdout AND stderr
 git checkout $lastWorkingCommit > /dev/null 2>&1
 
@@ -76,7 +81,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "... Validating that the target command: $brokenCommand is broken ..."
-echo "$ $brokenCommand"
+echo $'\n$ '"$brokenCommand"
 # silence command stdout AND stderr
 $brokenCommand > /dev/null 2>&1
 
@@ -88,19 +93,37 @@ else
     exit 2
 fi
 
+echo "... Clear any changes ..."
+echo $'\n$ git reset HEAD --hard'
+# silence command stdout
+git reset HEAD --hard > /dev/null
 
-echo "... TBC ..."
+echo "... Back to top of developmentBranch: $developmentBranch ..."
+echo $'\n$ git checkout '"$developmentBranch"
+git checkout $developmentBranch > /dev/null
+
+echo "... Gather list of all commits between HEAD and lastWorkingCommit ..."
+echo $'\n$ git rev-list HEAD '"$lastWorkingcommit"
+commits=$(git rev-list HEAD $lastWorkingcommit)
+commitsArr=($commits)
+numCommits=${#commitsArr[*]}
+echo $'\n'"$numCommits found between HEAD and $lastWorkingCommit."
+
+echo "... Searching (TBC) ..."
+
+#### BINARY SEARCH OF COMMITS, LOOKING FOR ONE WHERE IT WORKS AND THE NEXT DOES NOT.
 
 echo "... Cleaning up ..."
-echo "$ git reset HEAD --hard"
-git reset HEAD --hard
+echo $'\n$ git reset HEAD --hard'
+# silence command stdout
+git reset HEAD --hard > /dev/null
 
 echo $initialBranch
 if [ $initialBranch != "" ]; then
-    echo "$ git checkout $initialBranch"
+    echo $'\n$ git checkout '"$initialBranch"
     git checkout $initialBranch > /dev/null
 else
-    echo "$ git checkout $developmentBranch"
+    echo $'\n$ git checkout '"$developmentBranch"
     git checkout $developmentBranch > /dev/null
 fi
 
