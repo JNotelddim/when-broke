@@ -114,7 +114,7 @@ echo "... Searching  ..."
 #### BINARY SEARCH OF COMMITS, LOOKING FOR ONE WHERE IT WORKS AND THE NEXT DOES NOT.
 
 # Binary search:
-# - input: sorted list of items
+# - input: must be a sorted list of items
 # - each iteration: 
 #  - take middle item of list, compare to target, disqualify one half or the other.
 
@@ -124,8 +124,6 @@ workingArr=($commits)
 wasLastIndexFunctioning=false
 breakingCommit=""
 
-# TODO: remove "10" hardcoded case and use a real $numCommits-derived value
-# while [[ $found == false && i -lt $numCommits ]]; do
 while [[ $found == false && i -lt 15 ]]; do
     # bash uses floor rounding natively
     numItems=${#workingArr[@]}
@@ -147,7 +145,6 @@ while [[ $found == false && i -lt 15 ]]; do
         echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex, newFirstItem: ${workingArr[0]}]}"
     else
         if [ $wasLastIndexFunctioning == true ] && [ ${#workingArr[@]} -lt 3 ]; then
-            # WAIT.. THIS IS ONLY TRUE IF "lastIndex" is the previous index in the list... not if it's like 50 items ahead...
             found=true
             breakingCommit=$midItem
             echo "Found the breaking commit: $breakingCommit."
