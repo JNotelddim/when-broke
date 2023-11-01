@@ -103,6 +103,8 @@ echo $'\n$ git checkout '"$developmentBranch"
 git checkout $developmentBranch > /dev/null
 
 echo "... Gather list of all commits between HEAD and lastWorkingCommit ..."
+
+## AHH. this isn't working properly.. it's giving me all commits in the entire project
 echo $'\n$ git rev-list HEAD '"$lastWorkingcommit"
 commits=$(git rev-list HEAD $lastWorkingcommit)
 commitsArr=($commits)
@@ -138,16 +140,17 @@ while [[ $found == false && i -lt 10 ]]; do
     $brokenCommand > /dev/null 2>&1
 
     isFunctioning=($? -eq 0)
+    ## NOTE: the commits array is in ** reverse-chronological order ** !!!!
     if [ $isFunctioning == true ]; then
         echo "[Working] Go further forward."
-        # Re-assing working array to be 'mid' => [-1]
-        workingArr=("${workingArr[@]:$midItemIndex}")
-        echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex"
+        # Re-assign working array to be 0 => 'mid'
+        workingArr=("${workingArr[@]:0:$midItemIndex}")
+        echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex, newFirstItem: ${workingArr[0]}, newLastItem: ${workingArr[-1]}"
     else
         echo "[Broken] Go further back."
-        # Re-assign working array to be 0 => 'mid'
-        workingArr=("${workingArr[@]::$midItemIndex}")
-        echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex"
+        # Re-assing working array to be 'mid' => [-1]
+        workingArr=("${workingArr[@]:$midItemIndex}")
+        echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex, newFirstItem: ${workingArr[0]}, newLastItem: ${workingArr[-1]}"
     fi
 
     i=$(( i + 1 ))
