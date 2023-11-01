@@ -136,18 +136,17 @@ while [[ $found == false && i -lt 10 ]]; do
     echo "$ $brokenCommand"
     $brokenCommand > /dev/null 2>&1
 
-    isFunctioning=($? -eq 0)
     ## NOTE: the commits array is in ** reverse-chronological order ** !!!!
-    if [ $isFunctioning == true ]; then
+    if [ $? == 0 ]; then
         echo "[Working] Go further forward."
         # Re-assign working array to be 0 => 'mid'
         workingArr=("${workingArr[@]:0:$midItemIndex}")
-        echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex, newFirstItem: ${workingArr[0]}, newLastItem: ${workingArr[-1]}"
+        echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex, newFirstItem: ${workingArr[0]}]}"
     else
         echo "[Broken] Go further back."
         # Re-assing working array to be 'mid' => [-1]
         workingArr=("${workingArr[@]:$midItemIndex}")
-        echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex, newFirstItem: ${workingArr[0]}, newLastItem: ${workingArr[-1]}"
+        echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex, newFirstItem: ${workingArr[0]}}"
     fi
 
     i=$(( i + 1 ))
