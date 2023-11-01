@@ -1,0 +1,109 @@
+__ In /Users/jaredm/dev/when-broke __
+... Going to target directory: /Users/jaredm/dev/past-projects/primasun-mira/primasun-mobile ...
+... Current pwd: /Users/jaredm/dev/past-projects/primasun-mira/primasun-mobile.
+... Validating that current directory is a git project...
+
+$ git status
+On branch jm/test-other-branch
+nothing to commit, working tree clean
+[Command Executed Successfully]
+
+$ git fetch -a
+... Current branch: jm/test-other-branch.
+... stashing any work-in-progress changes ...
+
+$ git stash -u
+
+$ git checkout main
+
+$ git pull
+... Validating that the target command: yarn gql:compile is broken. ...
+
+$yarn gql:compile
+[Command Failed, as expected.]
+... Checking out latest known working commit: cbfe239d ...
+
+$ git checkout cbfe239d
+... Validating that the target command: yarn gql:compile is broken ...
+
+$ yarn gql:compile
+[Command Executed Successfully]
+... Clear any changes ...
+
+$ git reset HEAD --hard
+... Back to top of developmentBranch: main ...
+
+$ git checkout main
+... Gather list of all commits between HEAD and lastWorkingCommit ...
+
+$ git rev-list HEAD ^cbfe239d
+
+308 found between HEAD and cbfe239d.
+... Searching  ...
+
+[0]; workingArrCount: 308; midIndex: 154; commit: 7495834724af1e980917fe3664fb4d20f032fd53
+$ git checkout 7495834724af1e980917fe3664fb4d20f032fd53
+$ yarn gql:compile
+[Working] Go further forward.
+New Working Array, num items: 154, midItemIndex: 154, newFirstItem: deadc1714101665b65c43d6c3f89623580fee2db]}
+
+[1]; workingArrCount: 154; midIndex: 77; commit: 17ce6961182592a76577c57203c8ff87573fe638
+$ git checkout 17ce6961182592a76577c57203c8ff87573fe638
+$ yarn gql:compile
+[Working] Go further forward.
+New Working Array, num items: 77, midItemIndex: 77, newFirstItem: deadc1714101665b65c43d6c3f89623580fee2db]}
+
+[2]; workingArrCount: 77; midIndex: 38; commit: 0f83530821a4fb8784d2776f04b8d896bb81641d
+$ git checkout 0f83530821a4fb8784d2776f04b8d896bb81641d
+$ yarn gql:compile
+[Broken] Go further back.
+New Working Array, num items: 39, midItemIndex: 38, newFirstItem: 0f83530821a4fb8784d2776f04b8d896bb81641d}
+
+[3]; workingArrCount: 39; midIndex: 19; commit: aceea874b8c777e86efd351280163fe7a86ab3dd
+$ git checkout aceea874b8c777e86efd351280163fe7a86ab3dd
+$ yarn gql:compile
+[Working] Go further forward.
+New Working Array, num items: 19, midItemIndex: 19, newFirstItem: 0f83530821a4fb8784d2776f04b8d896bb81641d]}
+
+[4]; workingArrCount: 19; midIndex: 9; commit: 5758bad51da88ee48f3491c00406dfb4689a8f51
+$ git checkout 5758bad51da88ee48f3491c00406dfb4689a8f51
+$ yarn gql:compile
+[Broken] Go further back.
+New Working Array, num items: 10, midItemIndex: 9, newFirstItem: 5758bad51da88ee48f3491c00406dfb4689a8f51}
+
+[5]; workingArrCount: 10; midIndex: 5; commit: 46ef5383a82eb444cd08ddafcd83c7704dcbf778
+$ git checkout 46ef5383a82eb444cd08ddafcd83c7704dcbf778
+$ yarn gql:compile
+[Working] Go further forward.
+New Working Array, num items: 5, midItemIndex: 5, newFirstItem: 5758bad51da88ee48f3491c00406dfb4689a8f51]}
+
+[6]; workingArrCount: 5; midIndex: 2; commit: 2b9cf46a1816427c03c912afddaed24f7496a4cd
+$ git checkout 2b9cf46a1816427c03c912afddaed24f7496a4cd
+$ yarn gql:compile
+[Broken] Go further back.
+New Working Array, num items: 3, midItemIndex: 2, newFirstItem: 2b9cf46a1816427c03c912afddaed24f7496a4cd}
+
+[7]; workingArrCount: 3; midIndex: 1; commit: aeaa8155aec9a559667727067e4e937e0bbc7d8c
+$ git checkout aeaa8155aec9a559667727067e4e937e0bbc7d8c
+$ yarn gql:compile
+[Broken] Go further back.
+New Working Array, num items: 2, midItemIndex: 1, newFirstItem: aeaa8155aec9a559667727067e4e937e0bbc7d8c}
+
+[8]; workingArrCount: 2; midIndex: 1; commit: 8a4b9334c155765a2907f01705b24c02acf1f4c0
+$ git checkout 8a4b9334c155765a2907f01705b24c02acf1f4c0
+$ yarn gql:compile
+[Working] Go further forward.
+New Working Array, num items: 1, midItemIndex: 1, newFirstItem: aeaa8155aec9a559667727067e4e937e0bbc7d8c]}
+
+[9]; workingArrCount: 1; midIndex: 0; commit: aeaa8155aec9a559667727067e4e937e0bbc7d8c
+$ git checkout aeaa8155aec9a559667727067e4e937e0bbc7d8c
+$ yarn gql:compile
+Found the breaking commit: aeaa8155aec9a559667727067e4e937e0bbc7d8c.
+... Cleaning up ...
+
+$ git reset HEAD --hard
+jm/test-other-branch
+
+$ git checkout jm/test-other-branch
+__ Fin. __
+Found breaking commit: aeaa8155aec9a559667727067e4e937e0bbc7d8c
