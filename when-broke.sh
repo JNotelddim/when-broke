@@ -121,10 +121,11 @@ echo "... Searching  ..."
 found=false
 i=0
 workingArr=($commits)
+wasLastIndexFunctioning=false
 
 # TODO: remove "10" hardcoded case and use a real $numCommits-derived value
 # while [[ $found == false && i -lt $numCommits ]]; do
-while [[ $found == false && i -lt 10 ]]; do
+while [[ $found == false && i -lt 20 ]]; do
     # bash uses floor rounding natively
     numItems=${#workingArr[@]}
     midItemIndex=$(( $numItems / 2 ))
@@ -141,12 +142,20 @@ while [[ $found == false && i -lt 10 ]]; do
         echo "[Working] Go further forward."
         # Re-assign working array to be 0 => 'mid'
         workingArr=("${workingArr[@]:0:$midItemIndex}")
+        wasLastIndexFunctioning=true
         echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex, newFirstItem: ${workingArr[0]}]}"
     else
-        echo "[Broken] Go further back."
-        # Re-assing working array to be 'mid' => [-1]
-        workingArr=("${workingArr[@]:$midItemIndex}")
-        echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex, newFirstItem: ${workingArr[0]}}"
+        if [ $wasLastIndexFunctioning == true ]; then
+            # WAIT.. THIS IS ONLY TRUE IF "lastIndex" is the previous index in the list... not if it's like 50 items ahead...
+            found=true
+            echo "Found the breaking commit: $midItem."
+        else
+            echo "[Broken] Go further back."
+            # Re-assing working array to be 'mid' => [-1]
+            workingArr=("${workingArr[@]:$midItemIndex}")
+            wasLastIndexFunctioning=false
+            echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex, newFirstItem: ${workingArr[0]}}"
+        fi
     fi
 
     i=$(( i + 1 ))
