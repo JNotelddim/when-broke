@@ -103,10 +103,8 @@ echo $'\n$ git checkout '"$developmentBranch"
 git checkout $developmentBranch > /dev/null
 
 echo "... Gather list of all commits between HEAD and lastWorkingCommit ..."
-
-## AHH. this isn't working properly.. it's giving me all commits in the entire project
-echo $'\n$ git rev-list HEAD '"$lastWorkingcommit"
-commits=$(git rev-list HEAD $lastWorkingcommit)
+echo $'\n$ git rev-list HEAD ^'"$lastWorkingCommit"
+commits=$(git rev-list HEAD ^$lastWorkingCommit)
 commitsArr=($commits)
 numCommits=${#commitsArr[*]}
 echo $'\n'"$numCommits found between HEAD and $lastWorkingCommit."
@@ -119,7 +117,6 @@ echo "... Searching  ..."
 # - input: sorted list of items
 # - each iteration: 
 #  - take middle item of list, compare to target, disqualify one half or the other.
-
 
 found=false
 i=0
