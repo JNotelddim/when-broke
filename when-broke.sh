@@ -109,9 +109,54 @@ commitsArr=($commits)
 numCommits=${#commitsArr[*]}
 echo $'\n'"$numCommits found between HEAD and $lastWorkingCommit."
 
-echo "... Searching (TBC) ..."
+echo "... Searching  ..."
 
 #### BINARY SEARCH OF COMMITS, LOOKING FOR ONE WHERE IT WORKS AND THE NEXT DOES NOT.
+
+# Binary search:
+# - input: sorted list of items
+# - each iteration: 
+#  - take middle item of list, compare to target, disqualify one half or the other.
+
+
+found=false
+i=0
+workingArr=($commits)
+
+# TODO: remove "10" hardcoded case and use a real $numCommits-derived value
+# while [[ $found == false && i -lt $numCommits ]]; do
+while [[ $found == false && i -lt 10 ]]; do
+    # bash uses floor rounding natively
+    midItemIndex=$(( $numCommits / 2 ))
+    midItem=${workingArr[$midItemIndex]}
+
+    echo $'\n'"[$i]; workingArrCount: ${#workingArr[*]}; midIndex: $midItemIndex; commit: $midItem"
+    echo "$ git checkout $midItem"
+    git checkout $midItem > /dev/null 2>&1
+    echo "$ $brokenCommand"
+    $brokenCommand > /dev/null 2>&1
+
+    isFunctioning=($? -eq 0)
+    if [ $isFunctioning == true ]; then
+        echo "[Working] Go further forward."
+        # Re-assing working array to be 'mid' => [-1]
+        # workingArr=${workingArr[@]:$midItemIndex:${#workingArr[*]}}
+        workingArr=${workingArr[@]:$midItemIndex}
+        echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex"
+    else
+        echo "[Broken] Go further back."
+        # Re-assign working array to be 0 => 'mid'
+        # newArr=(${workingArr[@]:0:$midItemIndex})
+        newArr=(${workingArr[@]::$midItemIndex})
+        echo "New Working Array, num items: ${#workingArr[*]}, midItemIndex: $midItemIndex"
+        # echo "$newArr"
+        workingArr=$newArr
+    fi
+
+    i=$(( i + 1 ))
+done
+
+
 
 echo "... Cleaning up ..."
 echo $'\n$ git reset HEAD --hard'
